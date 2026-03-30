@@ -4,7 +4,24 @@ site_url = "https://pbzarr.github.io"
 site_description = "Documentation for pbzarr"
 copyright = "Copyright &copy; 2024–2026 Cade Mirchandani"
 
-nav = [{ "Home" = "index.md" }]
+nav = [
+  { "Home" = "index.md" },
+  { "Specification" = "spec/index.md" },
+  { "Python" = [
+    { "Quickstart" = "python/quickstart.md" },
+    { "API Reference" = "python/api.md" },
+    { "Backends" = "python/backends.md" },
+  ] },
+  { "Rust" = [
+    { "Quickstart" = "rust/quickstart.md" },
+    { "API Reference" = "rust/api.md" },
+  ] },
+  { "CLI" = "cli/index.md" },
+  { "Design" = [
+    { "Architecture" = "design/architecture.md" },
+    { "Comparison" = "design/comparison.md" },
+  ] },
+]
 
 [project.theme]
 logo = "assets/pbzarr-icon.svg"
