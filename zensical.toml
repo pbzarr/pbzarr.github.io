@@ -25,6 +25,7 @@ nav = [
 
 [project.theme]
 logo = "assets/pbzarr-icon.svg"
+favicon = "assets/pbzarr-icon.svg"
 language = "en"
 custom_dir = "overrides"
 features = [
