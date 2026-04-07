@@ -1,8 +1,4 @@
----
-hide:
-  - navigation
-  - toc
----
+<h1 style="display:none;">pbzarr</h1>
 
 <div style="text-align: center;" markdown>
 
@@ -19,7 +15,7 @@ hide:
 
 ## What is PBZ?
 
-PBZ (Per-Base Zarr) is a convention and domain layer on top of [Zarr v3](https://zarr.dev/) for storing per-base resolution genomic data — depths, methylation levels, quality scores, masks, and more.
+PBZ (Per-Base Zarr) is a convention and domain layer on top of [Zarr v3](https://zarr.dev/) for storing per-base resolution genomic data: depths, methylation levels, quality scores, masks, and more.
 
 It defines a standard store layout and metadata schema so that files written by any PBZ implementation can be read by all others.
 
@@ -29,7 +25,6 @@ Existing formats for per-base genomic data have limitations:
 
 - **bigWig** is read-only after creation, single-track, and lacks modern compression.
 - **D4** is fast and compact but single-track and uses a custom binary format.
-- **BAM/CRAM** store alignments, not derived signals — extracting depths requires re-computation.
 
 PBZ builds on Zarr v3 to provide:
 
