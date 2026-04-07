@@ -16,4 +16,5 @@ python = ">=3.14.3,<3.15"
 [pypi-dependencies]
 zensical = ">=0.0.29, <0.0.30"
 mkdocstrings = { version = ">=0.28", extras = ["python"] }
-pbzarr = { path = "../pbzarr-py", editable = true }
+pbzarr = { git = "https://github.com/pbzarr/pbzarr-py.git"}
+mkdocs-autorefs = ">=1.4.4, <2"
