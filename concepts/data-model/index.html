@@ -1,0 +1,1689 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Per-base and binned genomic data in Zarr v3">
+      
+      
+      
+        <link rel="canonical" href="https://pbzarr.github.io/concepts/data-model/">
+      
+      
+      
+        <link rel="prev" href="../../get-started/1000-genomes/">
+      
+      
+        <link rel="next" href="../zarr-xarray-dask/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/pbzarr-icon.svg">
+      <meta name="generator" content="zensical-0.1.1">
+    
+    
+      
+        <title>Data model - pbzarr</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.ebb7f775.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/modern/palette.b60ce83d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,500,500i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-hidden="true"></label>
+    <div data-md-component="skip">
+      <a href="#__skip" class="md-skip">
+        Skip to content
+      </a>
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="pbzarr" class="md-header__button md-logo" aria-label="pbzarr" data-md-component="logo">
+      
+  <img src="../../assets/pbzarr-icon.svg" alt="pbzarr">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+      <span class="md-visually-hidden">Navigation</span>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            pbzarr
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Data model
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <span class="md-visually-hidden">Search</span>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/pbzarr/pbzarr" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pbzarr/pbzarr
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="pbzarr" class="md-nav__button md-logo" aria-label="pbzarr" data-md-component="logo">
+      
+  <img src="../../assets/pbzarr-icon.svg" alt="pbzarr">
+
+    </a>
+    pbzarr
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pbzarr/pbzarr" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pbzarr/pbzarr
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Home
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Get started
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_2">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Get started
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../get-started/install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Install
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../get-started/1000-genomes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Try a public store
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Concepts
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+            <label class="md-nav__title" for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Concepts
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Data model
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Data model
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-in-a-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        What is in a store
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        The reference
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-position-axis" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        The position axis
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tracks" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Tracks
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#column-axes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Column axes
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bins" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Bins
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fill-and-null" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Fill and null
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Next steps
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zarr-xarray-dask/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Zarr, xarray, and Dask
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-layout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Storage layout
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-mistakes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Common mistakes
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../cookbook/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Cookbook
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Cookbook
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbook/build-a-cohort-store/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Build a cohort store
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbook/depth-in-regions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Depth in regions
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbook/callable-mask/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Callable mask
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbook/compare-samples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Compare samples
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbook/export-bedgraph/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Export to bedGraph
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbook/derived-track/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Save a derived track
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Reference
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Reference
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Command line
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/python/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Python API
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Store format
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/rust/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Rust
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../UPGRADING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Upgrading to 0.8
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-in-a-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        What is in a store
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        The reference
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-position-axis" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        The position axis
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tracks" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Tracks
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#column-axes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Column axes
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bins" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Bins
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fill-and-null" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Fill and null
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Next steps
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      <li class="md-path__item">
+        <a href="././" class="md-path__link">
+          
+  
+  <span class="md-ellipsis">
+    Concepts
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                <a id="__skip" tabindex="-1"></a>
+                
+                  
+
+  
+  
+
+
+<h1 id="data-model">Data model<a class="headerlink" href="#data-model" title="Permanent link">&para;</a></h1>
+<p>pbzarr is a single store for genomic sequencing data that allows for joint computation and storage across data types (tracks), genomic position (<code>position</code>), and samples (column dim). For example, a single pbzarr store can be used to represent a cohort of individuals jointly for their quantitative signals (e.g., genomic coverage and DNase), while also storing categorical annotations (e.g., positions of repetitive elements) for stratification in data analysis (panel A). Importantly, this allows for arbitrary computation on or across tracks and their shared dimensions, e.g., an intersection of DNase values across a cohort with repetitive element annotations is a single matrix operation resulting in DNase values stratified by repetitive elements (panel B).</p>
+<p>Formally, a pbzarr store is a Zarr v3 group that holds a reference genome defined by contig IDs and contig lengths, and track arrays whose first dimension runs over every base in order, followed by optional labeled dimensions such as <code>sample</code> (panel A, and the <a href="https://github.com/pbzarr/pbzarr/tree/main/spec">format specification</a>). Each track is a Zarr array, which is split into blocks of consecutive positions and samples (chunks) that are compressed and stored independently (panel C). Because a pbzarr store is an ordinary Zarr store, it can be a directory on a file system, a ZIP file, or a location in cloud object storage.</p>
+<p><img alt="The pbzarr format" src="../../assets/store-overview.png" /></p>
+<p><strong>The pbzarr format.</strong> <strong>(A)</strong> A pbzarr store holds a reference genome, defined by contig IDs and contig lengths (blue), and any number of tracks. Tracks share the position axis, which runs over every base in every contig in order (dashed line, contig boundary), and can hold quantitative signals (purple, green) or categorical annotations (red) along a labeled second dimension. <strong>(B)</strong> Intersecting the DNase track with the repeat track gives DNase values for each sample stratified by repeat class. <strong>(C)</strong> Each chunk of a track (red outline in A) passes through a Zarr codec pipeline and is stored as one object named by its chunk index (e.g., <code>c/1/0</code>), on a file system or in cloud object storage.</p>
+<p>The rest of this page explains each part of a store. After you read it, you can look at <code>print(ds)</code> and name each part.</p>
+<h2 id="what-is-in-a-store">What is in a store<a class="headerlink" href="#what-is-in-a-store" title="Permanent link">&para;</a></h2>
+<p>A store has one reference: a list of contig names and lengths, in order. The store fixes the reference when it is created. Every track covers the whole reference.</p>
+<p>A store opens as one <a href="https://docs.xarray.dev/en/stable/user-guide/data-structures.html#dataset">xarray Dataset</a>. This is a small store with two contigs and six samples:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pbzarr</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">ds</span> <span class="o">=</span> <span class="n">pbzarr</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;cohort.pbz&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>&lt;xarray.Dataset&gt; Size: 16MB
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Dimensions:        (position: 320000, sample: 6, contig: 2)
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>Coordinates:
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  * sample         (sample) object 48B &#39;s1&#39; &#39;s2&#39; &#39;s3&#39; &#39;s4&#39; &#39;s5&#39; &#39;s6&#39;
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    contig_id      (contig) object 16B &#39;chr1&#39; &#39;chr2&#39;
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    contig_length  (contig) int64 16B 200000 120000
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>  * reference      &lt;U8 32B &#39;cca77687&#39;
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>Dimensions without coordinates: position, contig
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>Data variables:
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    depth          (position, sample) int32 8MB dask.array&lt;chunksize=(320000, 6), meta=np.ndarray&gt;
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    mappable       (position) bool 320kB dask.array&lt;chunksize=(320000,), meta=np.ndarray&gt;
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    signal         (position, sample) float32 8MB dask.array&lt;chunksize=(320000, 6), meta=np.ndarray&gt;
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>Indexes:
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    reference  ReferenceIndex(2 contigs, cca77687)
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>Attributes:
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    zarr_conventions:  [{&#39;uuid&#39;: &#39;d5bd7bea-0388-4e0a-9844-707c034e9add&#39;, &#39;nam...
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    pbz:version:       0.5
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Part</th>
+<th>In the Dataset</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>reference</td>
+<td><code>contig_id</code> and <code>contig_length</code> on the <code>contig</code> dimension</td>
+<td>contig names and lengths, in order</td>
+</tr>
+<tr>
+<td><code>position</code></td>
+<td>a dimension with no coordinate</td>
+<td>every base of every contig, one after the other</td>
+</tr>
+<tr>
+<td>track</td>
+<td>a data variable whose first dimension is <code>position</code> or <code>bin_N</code></td>
+<td>one kind of measurement: here <code>depth</code>, <code>signal</code>, and <code>mappable</code></td>
+</tr>
+<tr>
+<td>column axis</td>
+<td>a dimension such as <code>sample</code>, with a label coordinate of the same name</td>
+<td>the columns of a 2D track</td>
+</tr>
+<tr>
+<td><code>reference</code></td>
+<td>a coordinate with no dimension</td>
+<td>a short digest of the reference, in memory only</td>
+</tr>
+</tbody>
+</table>
+<p>The arrays are lazy. <code>pbzarr.open</code> reads the metadata only. pbzarr reads values when you call <code>.compute()</code>, <code>.values</code>, or a function that needs them.</p>
+<h2 id="the-reference">The reference<a class="headerlink" href="#the-reference" title="Permanent link">&para;</a></h2>
+<p>The reference is the arrays <code>contig_id</code> and <code>contig_length</code>. Their order defines the genome. <code>pbzarr.Reference.from_xarray</code> gives the reference as a mapping of contig name to length:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">ref</span> <span class="o">=</span> <span class="n">pbzarr</span><span class="o">.</span><span class="n">Reference</span><span class="o">.</span><span class="n">from_xarray</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">ref</span><span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">]</span>          <span class="c1"># 200000</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">list</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span>            <span class="c1"># [&#39;chr1&#39;, &#39;chr2&#39;]</span>
+</code></pre></div>
+<p>Each array from <code>pbzarr.open</code> also has a <code>reference</code> coordinate. It has no dimension, so it stays on the result of arithmetic and of most reductions. When you combine arrays from two stores with different references, xarray raises <code>AlignmentError</code>. This stops a silent mix of two genomes. The coordinate is in memory only. The store does not hold it.</p>
+<h2 id="the-position-axis">The position axis<a class="headerlink" href="#the-position-axis" title="Permanent link">&para;</a></h2>
+<p><code>position</code> holds all contigs, one after the other, in reference order. Its length is the sum of the contig lengths. For the store above, <code>chr1</code> has 200,000 bases and <code>chr2</code> has 120,000 bases:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>row of position:  0 ........ 199,999 | 200,000 ........ 319,999
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>base:             chr1:0  chr1:199999 | chr2:0       chr2:119999
+</code></pre></div>
+<p>The first row of a contig is the sum of the lengths of the contigs before it.</p>
+<p>Coordinates are 0-based and half-open, as in BED. <code>chr1:100-200</code> is 100 bases: the base at 100 is in it, and the base at 200 is not.</p>
+<p><code>position</code> has no label for each base. To read one locus, use <code>pbzarr.region</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">locus</span> <span class="o">=</span> <span class="n">pbzarr</span><span class="o">.</span><span class="n">region</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">&quot;depth&quot;</span><span class="p">],</span> <span class="s2">&quot;chr2:1000-2000&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>&lt;xarray.DataArray &#39;depth&#39; (position: 1000, sample: 6)&gt; Size: 24kB
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>dask.array&lt;getitem, shape=(1000, 6), dtype=int32, chunksize=(1000, 6), chunktype=numpy.ndarray&gt;
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Coordinates:
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  * position       (position) object 8kB &#39;chr2:1000&#39; &#39;chr2:1001&#39; ... &#39;chr2:1998&#39;
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>  * sample         (sample) object 48B &#39;s1&#39; &#39;s2&#39; &#39;s3&#39; &#39;s4&#39; &#39;s5&#39; &#39;s6&#39;
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    region_contig  object 8B &#39;chr2&#39;
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    region_start   int64 8B 1000
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    region_end     int64 8B 2000
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    pos            (position) int64 8kB 1000 1001 ... 1998 1999
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>  * reference      &lt;U8 32B &#39;cca77687&#39;
+</code></pre></div>
+<p>The locus has labels such as <code>"chr2:1000"</code> on <code>position</code>, so <code>locus.sel(position="chr2:1500")</code> works. Its <code>pos</code> coordinate holds the contig-local positions as numbers. A region string can have these forms:</p>
+<table>
+<thead>
+<tr>
+<th>String</th>
+<th>Selects</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"chr1"</code></td>
+<td>all of <code>chr1</code></td>
+</tr>
+<tr>
+<td><code>"chr1:1000"</code></td>
+<td>from base 1000 to the end of <code>chr1</code></td>
+</tr>
+<tr>
+<td><code>"chr1:1000-2000"</code></td>
+<td>bases 1000 to 1999</td>
+</tr>
+<tr>
+<td><code>"chr1:1,000-2,000"</code></td>
+<td>the same; commas are ignored</td>
+</tr>
+</tbody>
+</table>
+<p>The command line uses the same rules for <code>-r</code>. Do not select rows of <code>position</code> directly, for example with <code>ds["depth"][:1000]</code> or <code>isel(position=...)</code>. See <a href="../common-mistakes/">Common mistakes</a>.</p>
+<h2 id="tracks">Tracks<a class="headerlink" href="#tracks" title="Permanent link">&para;</a></h2>
+<p>A track is one data variable. It has one data type, one fill value, and one set of compression settings. Its first dimension is <code>position</code> (one row for each base) or <code>bin_N</code> (one row for each bin). Values of different kinds go in different tracks. For example, depth, mapping quality, and a mask are three tracks in one store.</p>
+<p>A track has one or two dimensions:</p>
+<ul>
+<li><code>(position,)</code>: one value for each base, for example a mask or a reference signal.</li>
+<li><code>(position, sample)</code>: one value for each base and each column.</li>
+</ul>
+<h2 id="column-axes">Column axes<a class="headerlink" href="#column-axes" title="Permanent link">&para;</a></h2>
+<p>The second dimension of a track is a column axis. Its name is free: <code>sample</code>, <code>strand</code>, <code>metric</code>, or another name. A column axis has a label array with the same name, and the labels are unique. Tracks that use the same column axis share its labels. In the figure, <code>track_cov</code> and <code>track_dnase</code> share <code>sample</code>, and <code>track_repeats</code> uses <code>repeat</code>.</p>
+<h2 id="bins">Bins<a class="headerlink" href="#bins" title="Permanent link">&para;</a></h2>
+<p>A <code>bin_N</code> dimension holds bins of N bases, for example <code>bin_1000</code>. Bins start again at 0 in each contig, so the last bin of a contig can be short. <code>pbzarr.region</code> selects the bins that a region touches.</p>
+<p>In this release, <code>pbz view</code> and <code>pbz stat</code> do not read tracks on a <code>bin_N</code> dimension, and <code>pbzarr.reduce_regions</code> leaves them out of its result. Use xarray for these tracks.</p>
+<h2 id="fill-and-null">Fill and null<a class="headerlink" href="#fill-and-null" title="Permanent link">&para;</a></h2>
+<p>The fill of a track is the value at bases that no source covers. A null marks a missing value. Each data type has one null:</p>
+<table>
+<thead>
+<tr>
+<th>Data type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>float32, float64</td>
+<td><code>NaN</code></td>
+</tr>
+<tr>
+<td>int8 to int64, uint8 to uint64</td>
+<td>the type maximum</td>
+</tr>
+<tr>
+<td>bool</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<p>Each importer fills gaps in one way:</p>
+<table>
+<thead>
+<tr>
+<th>Importer</th>
+<th>Value at a gap</th>
+<th>Change it with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>d4</td>
+<td>0</td>
+<td>not possible</td>
+</tr>
+<tr>
+<td>BAM and CRAM</td>
+<td>0 (no reads means depth 0)</td>
+<td>not possible</td>
+</tr>
+<tr>
+<td>bigWig</td>
+<td>null</td>
+<td><code>--fill 0</code>, or <code>fill=0</code> in Python</td>
+</tr>
+<tr>
+<td>BED value column</td>
+<td>null</td>
+<td><code>--fill 0</code>, or <code>fill=0</code> in Python</td>
+</tr>
+<tr>
+<td>BED3 mask, or a bool column</td>
+<td>false</td>
+<td><code>--fill true</code> for a bool column</td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>--fill 0</code> when a gap in the source means 0, as in a bedGraph that leaves out zero regions. Keep the null when a gap means "no value", as in a methylation track.</p>
+<p>xarray reads an integer track that has nulls as a float track, with <code>NaN</code> at the nulls. A track of int8, int16, uint8, or uint16 becomes float32. A track of int32, int64, uint32, or uint64 becomes float64. If you need missing values, a float track is often simpler.</p>
+<h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../storage-layout/">Storage layout</a>: chunks, shards, compression, and zip stores.</li>
+<li><a href="../common-mistakes/">Common mistakes</a>: operations that give wrong numbers with no error.</li>
+<li><a href="../../reference/format/">Store format</a>: the rules for tools that read stores without pbzarr.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-circle-arrow-up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4M12 16V8"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../get-started/1000-genomes/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Try a public store">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Try a public store
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../zarr-xarray-dask/" class="md-footer__link md-footer__link--next" aria-label="Next: Zarr, xarray, and Dask">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Zarr, xarray, and Dask
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024-2026 Cade Mirchandani
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/pbzarr/pbzarr" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M216.5 362.5c-66-8-112.5-55.5-112.5-117 0-25 9-52 24-70-6.5-16.5-5.5-51.5 2-66 20-2.5 47 8 63 22.5 19-6 39-9 63.5-9s44.5 3 62.5 8.5c15.5-14 43-24.5 63-22 7 13.5 8 48.5 1.5 65.5 16 19 24.5 44.5 24.5 70.5 0 61.5-46.5 108-113.5 116.5 17 11 28.5 35 28.5 62.5v52c0 15 12.5 23.5 27.5 17.5C441 459.5 512 369 512 257 512 115.5 397 0 255.5 0S0 115.5 0 257c0 111 70.5 203 165.5 237.5 13.5 5 26.5-4 26.5-17.5v-40c-7 3-16 5-24 5-33 0-52.5-18-66.5-51.5-5.5-13.5-11.5-21.5-23-23-6-.5-8-3-8-6 0-6 10-10.5 20-10.5 14.5 0 27 9 40 27.5 10 14.5 20.5 21 33 21s20.5-4.5 32-16c8.5-8.5 15-16 21-21"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog" role="status" aria-atomic="true">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      
+        
+        
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["content.code.copy","content.tabs.link","navigation.footer","navigation.indexes","navigation.instant","navigation.path","navigation.sections","navigation.top","navigation.tracking","search.highlight"],"redirect":null,"search":"../../assets/javascripts/workers/search.719e0d91.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.3cb411a8.min.js"></script>
+      
+    
+  </body>
+</html>

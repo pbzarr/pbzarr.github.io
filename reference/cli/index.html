@@ -1,0 +1,2090 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Per-base and binned genomic data in Zarr v3">
+      
+      
+      
+        <link rel="canonical" href="https://pbzarr.github.io/reference/cli/">
+      
+      
+      
+        <link rel="prev" href="../../cookbook/derived-track/">
+      
+      
+        <link rel="next" href="../python/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/pbzarr-icon.svg">
+      <meta name="generator" content="zensical-0.1.1">
+    
+    
+      
+        <title>Command line - pbzarr</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.ebb7f775.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/modern/palette.b60ce83d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,500,500i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-hidden="true"></label>
+    <div data-md-component="skip">
+      <a href="#__skip" class="md-skip">
+        Skip to content
+      </a>
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="pbzarr" class="md-header__button md-logo" aria-label="pbzarr" data-md-component="logo">
+      
+  <img src="../../assets/pbzarr-icon.svg" alt="pbzarr">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+      <span class="md-visually-hidden">Navigation</span>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            pbzarr
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Command line
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <span class="md-visually-hidden">Search</span>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/pbzarr/pbzarr" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pbzarr/pbzarr
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="pbzarr" class="md-nav__button md-logo" aria-label="pbzarr" data-md-component="logo">
+      
+  <img src="../../assets/pbzarr-icon.svg" alt="pbzarr">
+
+    </a>
+    pbzarr
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pbzarr/pbzarr" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pbzarr/pbzarr
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Home
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Get started
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_2">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Get started
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../get-started/install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Install
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../get-started/1000-genomes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Try a public store
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Concepts
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Concepts
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Data model
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/zarr-xarray-dask/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Zarr, xarray, and Dask
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/storage-layout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Storage layout
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/common-mistakes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Common mistakes
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../cookbook/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Cookbook
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Cookbook
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbook/build-a-cohort-store/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Build a cohort store
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbook/depth-in-regions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Depth in regions
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbook/callable-mask/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Callable mask
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbook/compare-samples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Compare samples
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbook/export-bedgraph/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Export to bedGraph
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbook/derived-track/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Save a derived track
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Reference
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+            <label class="md-nav__title" for="__nav_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Reference
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Command line
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Command line
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pbz" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz</code>
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="pbz">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pbz-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz view</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-stat" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz stat</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz import</code>
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="pbz import">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pbz-import-bed" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz import bed</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-import-bam" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz import bam</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-import-d4" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz import d4</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-import-bigwig" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz import bigwig</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-append" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz append</code>
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="pbz append">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pbz-append-bed" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz append bed</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-append-bam" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz append bam</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-append-d4" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz append d4</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-append-bigwig" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz append bigwig</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-info" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz info</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-validate" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz validate</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Python API
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Store format
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rust/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Rust
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../UPGRADING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Upgrading to 0.8
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pbz" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz</code>
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="pbz">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pbz-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz view</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-stat" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz stat</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz import</code>
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="pbz import">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pbz-import-bed" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz import bed</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-import-bam" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz import bam</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-import-d4" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz import d4</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-import-bigwig" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz import bigwig</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-append" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz append</code>
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="pbz append">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pbz-append-bed" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz append bed</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-append-bam" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz append bam</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-append-d4" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz append d4</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-append-bigwig" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz append bigwig</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-info" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz info</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pbz-validate" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>pbz validate</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      <li class="md-path__item">
+        <a href="././" class="md-path__link">
+          
+  
+  <span class="md-ellipsis">
+    Reference
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                <a id="__skip" tabindex="-1"></a>
+                
+                  
+
+  
+  
+
+
+<h1 id="command-line-reference">Command-line reference<a class="headerlink" href="#command-line-reference" title="Permanent link">&para;</a></h1>
+<p>This page is the <code>--help</code> text of each <code>pbz</code> command. It is generated: run <code>pixi run docs-cli</code> after you change the CLI.</p>
+<h2 id="pbz"><code>pbz</code><a class="headerlink" href="#pbz" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Per-base Zarr tools
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Usage: pbz [OPTIONS] &lt;COMMAND&gt;
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>Commands:
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  view      Export one track as bedGraph-like text
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  stat      Compute summary statistics for one track
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  import    Import data into a PBZ store
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  append    Append columns to a track of a format-0.5 PBZ store
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  info      Print the reference, dimensions and per-variable layout of a store
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  validate  Check a store against the PBZ format rules. Exit code 1 when the store is not valid
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  help      Print this message or the help of the given subcommand(s)
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>Options:
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>  -v, --verbose...  Increase logging verbosity: -v info, -vv debug, -vvv trace. Warnings and errors always print. `RUST_LOG` overrides this when set
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>  -q, --quiet       Hide the summary line and the progress display of import and append
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>  -h, --help        Print help
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>  -V, --version     Print version
+</code></pre></div>
+<h3 id="pbz-view"><code>pbz view</code><a class="headerlink" href="#pbz-view" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Export one track as bedGraph-like text
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>Usage: pbz view [OPTIONS] &lt;STORE&gt;
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>Arguments:
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>  &lt;STORE&gt;  PBZ store to export
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>Options:
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>      --track &lt;TRACK&gt;    Track to export. Optional when the store holds exactly one track
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>  -v, --verbose...       Increase logging verbosity: -v info, -vv debug, -vvv trace. Warnings and errors always print. `RUST_LOG` overrides this when set
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>  -q, --quiet            Hide the summary line and the progress display of import and append
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>  -r, --region &lt;REGION&gt;  Region CHROM:START-END, 0-based and half-open as in BED (chr1:0-100 is the first 100 bases). CHROM alone selects the whole contig, also when the name contains &#39;:&#39;. An end past the contig is an error. Repeat for more regions. Without -r or -R, the command reads the whole genome
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>  -R, --regions &lt;BED&gt;    BED file (plain, gzip, or bgzip) with regions to read after the -r regions. The first three tab-separated columns give CHROM, START, END, 0-based and half-open. Lines that start with #, track, or browser are skipped
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>  -c, --columns &lt;LABEL&gt;  Column labels of a rank-2 track, comma-separated or repeated. Default: all columns in stored order
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>  -o, --output &lt;PATH&gt;    Output path. A `.gz` suffix writes BGZF; default is stdout
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>      --no-header        Do not write the `#chrom start end ...` header line
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>  -t, --threads &lt;N&gt;      Worker threads for chunk decode and BGZF compression. Default: all cores
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>  -p, --precision &lt;N&gt;    Significant digits for float values, `%g` style (UCSC bigWig convention) [default: 6]
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>  -h, --help             Print help
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>Examples:
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>  pbz view cohort.pbz --track depth
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>  pbz view cohort.pbz --track depth -r chr1:0-1000000 -o depth.bedgraph.gz
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>  pbz view cohort.pbz --track af -c s1,s2 -R targets.bed
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>Each region is written in order. Rows do not extend across region edges.
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>The track must have position as its first dimension and at most one other dimension. Tracks on a bin_N dimension are not supported. A null marks a missing value: NaN in a float track, and the _FillValue in an integer track. A float _FillValue must be NaN. view prints a null as NaN and leaves out rows where all columns are null. stat skips nulls.
+</code></pre></div>
+<h3 id="pbz-stat"><code>pbz stat</code><a class="headerlink" href="#pbz-stat" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Compute summary statistics for one track
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>Usage: pbz stat [OPTIONS] &lt;STORE&gt;
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>Arguments:
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>  &lt;STORE&gt;  PBZ store to read
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>Options:
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>      --track &lt;TRACK&gt;    Track to compute over. Optional when the store holds exactly one track
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>  -v, --verbose...       Increase logging verbosity: -v info, -vv debug, -vvv trace. Warnings and errors always print. `RUST_LOG` overrides this when set
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>  -q, --quiet            Hide the summary line and the progress display of import and append
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>  -r, --region &lt;REGION&gt;  Region CHROM:START-END, 0-based and half-open as in BED (chr1:0-100 is the first 100 bases). CHROM alone selects the whole contig, also when the name contains &#39;:&#39;. An end past the contig is an error. Repeat for more regions. Without -r or -R, the command reads the whole genome
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>  -R, --regions &lt;BED&gt;    BED file (plain, gzip, or bgzip) with regions to read after the -r regions. The first three tab-separated columns give CHROM, START, END, 0-based and half-open. Lines that start with #, track, or browser are skipped
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>  -s, --stat &lt;STAT&gt;      Statistic to compute [default: mean] [possible values: mean, min, max, median, hist]
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>  -c, --columns &lt;LABEL&gt;  Column labels of a rank-2 track, comma-separated or repeated. Default: all columns in stored order
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>  -o, --output &lt;PATH&gt;    Output path. A `.gz` suffix writes BGZF; default is stdout
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>      --no-header        Do not write the header line
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>  -t, --threads &lt;N&gt;      Worker threads for chunk decode and stat batches. Default: all cores
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>  -p, --precision &lt;N&gt;    Significant digits for float values, `%g` style [default: 6]
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>  -h, --help             Print help
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>Examples:
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>  pbz stat cohort.pbz --track depth
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>  pbz stat cohort.pbz --track depth -s median -R targets.bed
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>  pbz stat cohort.pbz --track depth -r chr1:0-1000 -r chr2:500-900
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>  pbz stat cohort.pbz --track af -s hist -c s1,s2
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>Without a region, stat writes one row per contig.
+<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>
+<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>The track must have position as its first dimension and at most one other dimension. Tracks on a bin_N dimension are not supported. A null marks a missing value: NaN in a float track, and the _FillValue in an integer track. A float _FillValue must be NaN. view prints a null as NaN and leaves out rows where all columns are null. stat skips nulls.
+</code></pre></div>
+<h3 id="pbz-import"><code>pbz import</code><a class="headerlink" href="#pbz-import" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Import data into a PBZ store
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Usage: pbz import [OPTIONS] &lt;COMMAND&gt;
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>Commands:
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>  bed     Import from tabix-indexed BED files
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>  bam     Import per-base depth or composition counts from BAM/CRAM files
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>  d4      Import per-base depth from d4 files
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>  bigwig  Import per-base float32 signal from bigWig files
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>  help    Print this message or the help of the given subcommand(s)
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>Options:
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>  -v, --verbose...  Increase logging verbosity: -v info, -vv debug, -vvv trace. Warnings and errors always print. `RUST_LOG` overrides this when set
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>  -q, --quiet       Hide the summary line and the progress display of import and append
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>  -h, --help        Print help
+</code></pre></div>
+<h4 id="pbz-import-bed"><code>pbz import bed</code><a class="headerlink" href="#pbz-import-bed" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Import from tabix-indexed BED files
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>Usage: pbz import bed [OPTIONS] [STORE] [PATH[:LABEL]]...
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>Arguments:
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  [STORE]            PBZ store to write. Import creates it when the path does not exist, and adds the track(s) to it when it exists
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  [PATH[:LABEL]]...  Input files, optionally suffixed with `:LABEL`. The default label is the file name without its format extension (`s1.bed.gz` gives `s1`)
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>Options:
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>  -t, --threads &lt;THREADS&gt;    Worker threads for decode and write [default: 4]
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>  -v, --verbose...           Increase logging verbosity: -v info, -vv debug, -vvv trace. Warnings and errors always print. `RUST_LOG` overrides this when set
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>      --decode-chunks &lt;N&gt;    Position chunks each reader decodes per read pass. Default: auto (up to 4M positions, fewer when that leaves workers short of pieces)
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>  -q, --quiet                Hide the summary line and the progress display of import and append
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>      --no-progress          Hide the progress display
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>      --chunk &lt;N&gt;            Positions per inner chunk. A 2D track has one column per inner chunk. Default: 65,536
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>      --shard &lt;N&gt;            Inner chunks per shard along positions, so a shard holds chunk x N positions. A shard is capped at the genome length, rounded up to whole chunks. Default: 1,024
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>      --shard-columns &lt;N&gt;    Columns per shard of a 2D track. A shard is capped at the track width. Default: 16. Give 1 to make a track that pbz append can grow
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>      --dim &lt;NAME&gt;           Name of the second dimension of a 2D track. A single source with --dim still makes a 2D track. Default: `sample` for several d4, bigWig or BAM sources. BED import has no default: it needs --dim whenever the output is 2D (several sources, or several BED columns in one track)
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>      --codecs &lt;JSON|@FILE&gt;  Zarr v3 codec metadata for the created track arrays: a `codecs` JSON array, or a `{&quot;chunk_grid&quot;: ..., &quot;codecs&quot;: [...]}` fragment. Pass `@path` to read the JSON from a file. Replaces the default Blosc(zstd-5, byte shuffle) pipeline and the whole chunk and shard layout; express sharding as a `sharding_indexed` codec and the outer grid as `chunk_grid`. Without `chunk_grid`, the outer grid is 65,536 positions by 16 columns, capped at the track width
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>      --zip                  Write a new single-file zip store. A STORE path that ends in `.zip` also does this. The path must not exist
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>  -f, --file-list &lt;PATH&gt;     Tab-delimited source list with PATH or PATH&lt;TAB&gt;LABEL records. Relative paths start from the directory of the list file
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>      --genome &lt;GENOME&gt;      FAI or chromosome-sizes file with the contig lengths. It is needed only when the store does not exist; an existing store gives its own
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>      --field &lt;FIELDS&gt;       BED header column to import (requires a `#`-prefixed header). Repeating selects several BED columns; omit to import all BED value columns
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>      --track &lt;TRACK&gt;        Output track name. Required for BED3, headerless BED4, and when several BED columns from one source form one wide track
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>      --dtype &lt;DTYPE&gt;        Value dtype for headerless BED4 input (inferred when omitted) [possible values: bool, uint8, uint16, uint32, uint64, int8, int16, int32, int64, float32, float64]
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>      --schema &lt;PATH&gt;        TSV schema mapping BED columns to target tracks. Unique target names create one track per BED column; repeated one-target rows create a single BED-column-axis track. A BED column is a header name or 1-based column index. A row can also give the dtype and the fill of its track
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>      --emit-schema &lt;BED&gt;    Print a schema TSV for this BED file (BED column, target track, inferred dtype, fill) to stdout and exit without importing. Edit it and feed it back via --schema
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>      --fill &lt;VALUE|na&gt;      Value of bases that no interval covers, for BED value columns: a number, true or false for a bool column, or na. na is the null of the dtype: NaN for a float, the type maximum for an integer. Default: na, and false for a bool column. BED3 masks always hold false
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>      --infer-rows &lt;N|all&gt;   Records sampled for dtype inference (default 1000), or `all`. A sample infers conservative classes (bool/int32/float32); `all` (or a file smaller than the sample) scans exhaustively and min-widths (uint8, int16, ...)
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>  -h, --help                 Print help
+<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>
+<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>Examples:
+<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a>  pbz import bed cohort.pbz s1.bed.gz s2.bed.gz --genome genome.fai --track depth --dim sample
+<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a>  pbz import bed mask.pbz regions.bed.gz --genome genome.fai --track callable
+<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a>  pbz import bed --emit-schema wide.bed.gz &gt; schema.tsv
+<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>  pbz import bed stats.pbz wide.bed.gz --genome genome.fai --dim metric --schema schema.tsv
+<a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a>
+<a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a>Tracks without --schema (S sources, V selected BED value columns):
+<a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a>  BED3            one bool track, true where an interval covers the base. Needs --track,
+<a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a>                  and --dim for several sources.
+<a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a>  S = 1, V = 1    one track (position). Needs --track when the file has no header.
+<a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a>  S = 1, V &gt; 1    one track (position, V). The header names are the column labels.
+<a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a>                  Needs --track and --dim.
+<a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a>  S &gt; 1, V = 1    one track (position, S). The source labels are the column labels.
+<a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a>                  Needs --dim, and --track when the files have no header.
+<a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a>  S &gt; 1, V &gt; 1    one track (position, S) for each value column, with the name of
+<a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a>                  that column. Needs --dim.
+<a id="__codelineno-4-48" name="__codelineno-4-48" href="#__codelineno-4-48"></a>A file without a `#chrom start end ...` header can have one value column only.
+<a id="__codelineno-4-49" name="__codelineno-4-49" href="#__codelineno-4-49"></a>--dim with one source and one value column also makes a (position, S) track.
+<a id="__codelineno-4-50" name="__codelineno-4-50" href="#__codelineno-4-50"></a>
+<a id="__codelineno-4-51" name="__codelineno-4-51" href="#__codelineno-4-51"></a>Bases that no interval covers are missing by default: they hold the null of the
+<a id="__codelineno-4-52" name="__codelineno-4-52" href="#__codelineno-4-52"></a>dtype (NaN for a float, the type maximum for an integer), which the track declares
+<a id="__codelineno-4-53" name="__codelineno-4-53" href="#__codelineno-4-53"></a>as its _FillValue. With this fill, inference keeps the type maximum free, and a
+<a id="__codelineno-4-54" name="__codelineno-4-54" href="#__codelineno-4-54"></a>value equal to it is an error. A bool column and a BED3 mask hold false there.
+<a id="__codelineno-4-55" name="__codelineno-4-55" href="#__codelineno-4-55"></a>Give --fill 0 when the gaps mean 0, as in a bedGraph that leaves out zero regions.
+<a id="__codelineno-4-56" name="__codelineno-4-56" href="#__codelineno-4-56"></a>
+<a id="__codelineno-4-57" name="__codelineno-4-57" href="#__codelineno-4-57"></a>Schema rows are BED_COLUMN[&lt;TAB&gt;TRACK[&lt;TAB&gt;DTYPE[&lt;TAB&gt;FILL]]]. An empty or absent
+<a id="__codelineno-4-58" name="__codelineno-4-58" href="#__codelineno-4-58"></a>TRACK takes the header name, an empty or absent DTYPE is inferred, and an empty
+<a id="__codelineno-4-59" name="__codelineno-4-59" href="#__codelineno-4-59"></a>or absent FILL takes --fill, else the default.
+</code></pre></div>
+<h4 id="pbz-import-bam"><code>pbz import bam</code><a class="headerlink" href="#pbz-import-bam" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Import per-base depth or composition counts from BAM/CRAM files
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Usage: pbz import bam [OPTIONS] --track &lt;TRACK&gt; &lt;STORE&gt; [PATH[:LABEL]]...
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>Arguments:
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>  &lt;STORE&gt;            PBZ store to write. Import creates it from the source headers when the path does not exist, and adds the track(s) to it when it exists
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>  [PATH[:LABEL]]...  Input files, optionally suffixed with `:LABEL`. The default label is the file name without its format extension (`s1.bed.gz` gives `s1`)
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>Options:
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>  -t, --threads &lt;THREADS&gt;      Worker threads for decode and write [default: 4]
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>  -v, --verbose...             Increase logging verbosity: -v info, -vv debug, -vvv trace. Warnings and errors always print. `RUST_LOG` overrides this when set
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>      --decode-chunks &lt;N&gt;      Position chunks each reader decodes per read pass. Default: auto (up to 4M positions, fewer when that leaves workers short of pieces)
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>  -q, --quiet                  Hide the summary line and the progress display of import and append
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>      --no-progress            Hide the progress display
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>      --chunk &lt;N&gt;              Positions per inner chunk. A 2D track has one column per inner chunk. Default: 65,536
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>      --shard &lt;N&gt;              Inner chunks per shard along positions, so a shard holds chunk x N positions. A shard is capped at the genome length, rounded up to whole chunks. Default: 1,024
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>      --shard-columns &lt;N&gt;      Columns per shard of a 2D track. A shard is capped at the track width. Default: 16. Give 1 to make a track that pbz append can grow
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>      --dim &lt;NAME&gt;             Name of the second dimension of a 2D track. A single source with --dim still makes a 2D track. Default: `sample` for several d4, bigWig or BAM sources. BED import has no default: it needs --dim whenever the output is 2D (several sources, or several BED columns in one track)
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>      --codecs &lt;JSON|@FILE&gt;    Zarr v3 codec metadata for the created track arrays: a `codecs` JSON array, or a `{&quot;chunk_grid&quot;: ..., &quot;codecs&quot;: [...]}` fragment. Pass `@path` to read the JSON from a file. Replaces the default Blosc(zstd-5, byte shuffle) pipeline and the whole chunk and shard layout; express sharding as a `sharding_indexed` codec and the outer grid as `chunk_grid`. Without `chunk_grid`, the outer grid is 65,536 positions by 16 columns, capped at the track width
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>      --zip                    Write a new single-file zip store. A STORE path that ends in `.zip` also does this. The path must not exist
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>  -f, --file-list &lt;PATH&gt;       Tab-delimited source list with PATH or PATH&lt;TAB&gt;LABEL records. Relative paths start from the directory of the list file
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>      --track &lt;TRACK&gt;          Output track name. In composition mode the depth track keeps this name and the per-event tracks are named `{track}_{field}`
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>      --mode &lt;MODE&gt;            Depth counts coverage only; composition also counts per-base events, emitting `{track}_{field}` for a, c, g, t, n, ins, del, ref_skip [default: depth] [possible values: depth, composition]
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>      --fasta &lt;FASTA&gt;          FASTA for CRAM sources (ignored for BAM)
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>      --min-mapq &lt;MIN_MAPQ&gt;    Minimum mapping quality for a read to count [default: 0]
+<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>      --min-bq &lt;MIN_BQ&gt;        Minimum per-base quality for a base to count [default: 0]
+<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>      --exclude-flags &lt;FLAGS&gt;  SAM flag bits that exclude a read: a decimal or 0x hex number, or comma-separated samtools flag names (PAIRED, PROPER_PAIR, UNMAP, MUNMAP, REVERSE, MREVERSE, READ1, READ2, SECONDARY, QCFAIL, DUP, SUPPLEMENTARY) [default: UNMAP,SECONDARY,QCFAIL,DUP]
+<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>      --overlap &lt;OVERLAP&gt;      Mate-overlap dedup mode. `proper` (default) matches mosdepth: only PROPER_PAIR-flagged overlapping mates are collapsed to one count. `all` matches riker/samtools-mpileup-style unconditional dedup of any overlapping mate pair. `none` disables dedup, double-counting every overlapping pair&#39;s shared span [default: proper] [possible values: proper, all, none]
+<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>      --count-deletions        Count CIGAR D (deletion)-spanned positions as covered depth. Off by default, matching the samtools/mosdepth/Picard/riker convention of excluding deletions from depth
+<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>  -h, --help                   Print help
+<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>
+<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>Examples:
+<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a>  pbz import bam depth.pbz s1.bam s2.bam --track depth
+<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a>  pbz import bam comp.pbz sample.cram --track depth --mode composition --fasta ref.fa
+</code></pre></div>
+<h4 id="pbz-import-d4"><code>pbz import d4</code><a class="headerlink" href="#pbz-import-d4" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Import per-base depth from d4 files
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>Usage: pbz import d4 [OPTIONS] --track &lt;TRACK&gt; &lt;STORE&gt; [PATH[:LABEL]]...
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>Arguments:
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>  &lt;STORE&gt;            PBZ store to write. Import creates it from the source headers when the path does not exist, and adds the track(s) to it when it exists
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>  [PATH[:LABEL]]...  Input files, optionally suffixed with `:LABEL`. The default label is the file name without its format extension (`s1.bed.gz` gives `s1`)
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>Options:
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>  -t, --threads &lt;THREADS&gt;    Worker threads for decode and write [default: 4]
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>  -v, --verbose...           Increase logging verbosity: -v info, -vv debug, -vvv trace. Warnings and errors always print. `RUST_LOG` overrides this when set
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>      --decode-chunks &lt;N&gt;    Position chunks each reader decodes per read pass. Default: auto (up to 4M positions, fewer when that leaves workers short of pieces)
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>  -q, --quiet                Hide the summary line and the progress display of import and append
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>      --no-progress          Hide the progress display
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>      --chunk &lt;N&gt;            Positions per inner chunk. A 2D track has one column per inner chunk. Default: 65,536
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>      --shard &lt;N&gt;            Inner chunks per shard along positions, so a shard holds chunk x N positions. A shard is capped at the genome length, rounded up to whole chunks. Default: 1,024
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>      --shard-columns &lt;N&gt;    Columns per shard of a 2D track. A shard is capped at the track width. Default: 16. Give 1 to make a track that pbz append can grow
+<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>      --dim &lt;NAME&gt;           Name of the second dimension of a 2D track. A single source with --dim still makes a 2D track. Default: `sample` for several d4, bigWig or BAM sources. BED import has no default: it needs --dim whenever the output is 2D (several sources, or several BED columns in one track)
+<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>      --codecs &lt;JSON|@FILE&gt;  Zarr v3 codec metadata for the created track arrays: a `codecs` JSON array, or a `{&quot;chunk_grid&quot;: ..., &quot;codecs&quot;: [...]}` fragment. Pass `@path` to read the JSON from a file. Replaces the default Blosc(zstd-5, byte shuffle) pipeline and the whole chunk and shard layout; express sharding as a `sharding_indexed` codec and the outer grid as `chunk_grid`. Without `chunk_grid`, the outer grid is 65,536 positions by 16 columns, capped at the track width
+<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>      --zip                  Write a new single-file zip store. A STORE path that ends in `.zip` also does this. The path must not exist
+<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>  -f, --file-list &lt;PATH&gt;     Tab-delimited source list with PATH or PATH&lt;TAB&gt;LABEL records. Relative paths start from the directory of the list file
+<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>      --track &lt;TRACK&gt;        Output track name
+<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>  -h, --help                 Print help
+<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>
+<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>Examples:
+<a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>  pbz import d4 cohort.pbz s1.d4 s2.d4:custom_label --track depth
+</code></pre></div>
+<h4 id="pbz-import-bigwig"><code>pbz import bigwig</code><a class="headerlink" href="#pbz-import-bigwig" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Import per-base float32 signal from bigWig files
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>Usage: pbz import bigwig [OPTIONS] --track &lt;TRACK&gt; &lt;STORE&gt; [PATH[:LABEL]]...
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>Arguments:
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>  &lt;STORE&gt;            PBZ store to write. Import creates it from the source headers when the path does not exist, and adds the track(s) to it when it exists
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>  [PATH[:LABEL]]...  Input files, optionally suffixed with `:LABEL`. The default label is the file name without its format extension (`s1.bed.gz` gives `s1`)
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>Options:
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>  -t, --threads &lt;THREADS&gt;    Worker threads for decode and write [default: 4]
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>  -v, --verbose...           Increase logging verbosity: -v info, -vv debug, -vvv trace. Warnings and errors always print. `RUST_LOG` overrides this when set
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>      --decode-chunks &lt;N&gt;    Position chunks each reader decodes per read pass. Default: auto (up to 4M positions, fewer when that leaves workers short of pieces)
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>  -q, --quiet                Hide the summary line and the progress display of import and append
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>      --no-progress          Hide the progress display
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>      --chunk &lt;N&gt;            Positions per inner chunk. A 2D track has one column per inner chunk. Default: 65,536
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>      --shard &lt;N&gt;            Inner chunks per shard along positions, so a shard holds chunk x N positions. A shard is capped at the genome length, rounded up to whole chunks. Default: 1,024
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>      --shard-columns &lt;N&gt;    Columns per shard of a 2D track. A shard is capped at the track width. Default: 16. Give 1 to make a track that pbz append can grow
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>      --dim &lt;NAME&gt;           Name of the second dimension of a 2D track. A single source with --dim still makes a 2D track. Default: `sample` for several d4, bigWig or BAM sources. BED import has no default: it needs --dim whenever the output is 2D (several sources, or several BED columns in one track)
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>      --codecs &lt;JSON|@FILE&gt;  Zarr v3 codec metadata for the created track arrays: a `codecs` JSON array, or a `{&quot;chunk_grid&quot;: ..., &quot;codecs&quot;: [...]}` fragment. Pass `@path` to read the JSON from a file. Replaces the default Blosc(zstd-5, byte shuffle) pipeline and the whole chunk and shard layout; express sharding as a `sharding_indexed` codec and the outer grid as `chunk_grid`. Without `chunk_grid`, the outer grid is 65,536 positions by 16 columns, capped at the track width
+<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>      --zip                  Write a new single-file zip store. A STORE path that ends in `.zip` also does this. The path must not exist
+<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>  -f, --file-list &lt;PATH&gt;     Tab-delimited source list with PATH or PATH&lt;TAB&gt;LABEL records. Relative paths start from the directory of the list file
+<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>      --track &lt;TRACK&gt;        Output track name
+<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>      --fill &lt;VALUE|na&gt;      Value of bases that no bigWig interval covers: a number, or na. na marks a missing value and reads as NaN. Default: na
+<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>  -h, --help                 Print help
+<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>
+<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>Examples:
+<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a>  pbz import bigwig signal.pbz sample.bw --track signal
+<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>  pbz import bigwig cohort.pbz brain.bw:brain liver.bw:liver --track signal --dim sample
+<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a>  pbz import bigwig signal.pbz sample.bw --track signal --fill 0
+<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a>
+<a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a>A bigWig does not say what a base outside its intervals means. By default such a base is missing: it reads as NaN, and the track declares NaN as its _FillValue. Give --fill 0 when the gaps mean 0.
+</code></pre></div>
+<h3 id="pbz-append"><code>pbz append</code><a class="headerlink" href="#pbz-append" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Append columns to a track of a format-0.5 PBZ store
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>Usage: pbz append [OPTIONS] &lt;COMMAND&gt;
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>Commands:
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>  bed     Append columns decoded from tabix-indexed BED files
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>  bam     Append columns decoded from BAM/CRAM files
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>  d4      Append columns decoded from d4 files
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>  bigwig  Append columns decoded from bigWig files
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>  help    Print this message or the help of the given subcommand(s)
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>Options:
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>  -v, --verbose...  Increase logging verbosity: -v info, -vv debug, -vvv trace. Warnings and errors always print. `RUST_LOG` overrides this when set
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>  -q, --quiet       Hide the summary line and the progress display of import and append
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>  -h, --help        Print help
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>The store fixes chunks, shards, codecs and the column dimension, so append takes no layout flags. Every root variable over the appended dimension grows. The tracks that the append writes get values in the new columns: --track, and with bam --mode composition also the {track}_{field} tracks. In the other variables, the new columns read as the fill value. A variable without that dimension, such as a reduction across columns, keeps its shape and becomes stale. pbz does not detect or mark it. Append cannot yet grow a track whose shard holds more than one column, which is the import default (--shard-columns 16). To append later, import with --shard-columns 1.
+</code></pre></div>
+<h4 id="pbz-append-bed"><code>pbz append bed</code><a class="headerlink" href="#pbz-append-bed" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>Append columns decoded from tabix-indexed BED files
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>Usage: pbz append bed [OPTIONS] --track &lt;TRACK&gt; &lt;STORE&gt; [PATH[:LABEL]]...
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>Arguments:
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>  &lt;STORE&gt;            PBZ store to grow. It must exist
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>  [PATH[:LABEL]]...  Input files, optionally suffixed with `:LABEL`. The default label is the file name without its format extension (`s1.bed.gz` gives `s1`)
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>Options:
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>  -t, --threads &lt;THREADS&gt;  Worker threads for decode and write [default: 4]
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>  -v, --verbose...         Increase logging verbosity: -v info, -vv debug, -vvv trace. Warnings and errors always print. `RUST_LOG` overrides this when set
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>      --decode-chunks &lt;N&gt;  Position chunks each reader decodes per read pass. Default: auto (up to 4M positions, fewer when that leaves workers short of pieces)
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>  -q, --quiet              Hide the summary line and the progress display of import and append
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>      --no-progress        Hide the progress display
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>  -f, --file-list &lt;PATH&gt;   Tab-delimited source list with PATH or PATH&lt;TAB&gt;LABEL records. Relative paths start from the directory of the list file
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>      --track &lt;TRACK&gt;      Track to grow. It must already have a column dimension
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>      --field &lt;FIELDS&gt;     BED header column that fills --track (requires a `#`-prefixed header). Omit when the header has one BED value column
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>      --fill &lt;VALUE|na&gt;    Value of bases that no interval covers: a number, true or false for a bool track, or na. Default: the fill of the stored track. A different fill is refused
+<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>  -h, --help               Print help
+<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>
+<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>Examples:
+<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>  pbz append bed cohort.pbz s3.bed.gz s4.bed.gz --track depth
+</code></pre></div>
+<h4 id="pbz-append-bam"><code>pbz append bam</code><a class="headerlink" href="#pbz-append-bam" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Append columns decoded from BAM/CRAM files
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>Usage: pbz append bam [OPTIONS] --track &lt;TRACK&gt; &lt;STORE&gt; [PATH[:LABEL]]...
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>Arguments:
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>  &lt;STORE&gt;            PBZ store to grow. It must exist
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>  [PATH[:LABEL]]...  Input files, optionally suffixed with `:LABEL`. The default label is the file name without its format extension (`s1.bed.gz` gives `s1`)
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>Options:
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>  -t, --threads &lt;THREADS&gt;      Worker threads for decode and write [default: 4]
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>  -v, --verbose...             Increase logging verbosity: -v info, -vv debug, -vvv trace. Warnings and errors always print. `RUST_LOG` overrides this when set
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>      --decode-chunks &lt;N&gt;      Position chunks each reader decodes per read pass. Default: auto (up to 4M positions, fewer when that leaves workers short of pieces)
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>  -q, --quiet                  Hide the summary line and the progress display of import and append
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>      --no-progress            Hide the progress display
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>  -f, --file-list &lt;PATH&gt;       Tab-delimited source list with PATH or PATH&lt;TAB&gt;LABEL records. Relative paths start from the directory of the list file
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>      --track &lt;TRACK&gt;          Track to grow. It must already have a column dimension
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>      --mode &lt;MODE&gt;            Depth counts coverage only; composition also counts per-base events, emitting `{track}_{field}` for a, c, g, t, n, ins, del, ref_skip [default: depth] [possible values: depth, composition]
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>      --fasta &lt;FASTA&gt;          FASTA for CRAM sources (ignored for BAM)
+<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>      --min-mapq &lt;MIN_MAPQ&gt;    Minimum mapping quality for a read to count [default: 0]
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>      --min-bq &lt;MIN_BQ&gt;        Minimum per-base quality for a base to count [default: 0]
+<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>      --exclude-flags &lt;FLAGS&gt;  SAM flag bits that exclude a read: a decimal or 0x hex number, or comma-separated samtools flag names (PAIRED, PROPER_PAIR, UNMAP, MUNMAP, REVERSE, MREVERSE, READ1, READ2, SECONDARY, QCFAIL, DUP, SUPPLEMENTARY) [default: UNMAP,SECONDARY,QCFAIL,DUP]
+<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>      --overlap &lt;OVERLAP&gt;      Mate-overlap dedup mode. `proper` (default) matches mosdepth: only PROPER_PAIR-flagged overlapping mates are collapsed to one count. `all` matches riker/samtools-mpileup-style unconditional dedup of any overlapping mate pair. `none` disables dedup, double-counting every overlapping pair&#39;s shared span [default: proper] [possible values: proper, all, none]
+<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>      --count-deletions        Count CIGAR D (deletion)-spanned positions as covered depth. Off by default, matching the samtools/mosdepth/Picard/riker convention of excluding deletions from depth
+<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a>  -h, --help                   Print help
+<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>
+<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a>Examples:
+<a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a>  pbz append bam depth.pbz s3.bam --track depth
+<a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a>  pbz append bam comp.pbz s3.cram --track depth --mode composition --fasta ref.fa
+</code></pre></div>
+<h4 id="pbz-append-d4"><code>pbz append d4</code><a class="headerlink" href="#pbz-append-d4" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>Append columns decoded from d4 files
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>Usage: pbz append d4 [OPTIONS] --track &lt;TRACK&gt; &lt;STORE&gt; [PATH[:LABEL]]...
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>Arguments:
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>  &lt;STORE&gt;            PBZ store to grow. It must exist
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>  [PATH[:LABEL]]...  Input files, optionally suffixed with `:LABEL`. The default label is the file name without its format extension (`s1.bed.gz` gives `s1`)
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>Options:
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>  -t, --threads &lt;THREADS&gt;  Worker threads for decode and write [default: 4]
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>  -v, --verbose...         Increase logging verbosity: -v info, -vv debug, -vvv trace. Warnings and errors always print. `RUST_LOG` overrides this when set
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>      --decode-chunks &lt;N&gt;  Position chunks each reader decodes per read pass. Default: auto (up to 4M positions, fewer when that leaves workers short of pieces)
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>  -q, --quiet              Hide the summary line and the progress display of import and append
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>      --no-progress        Hide the progress display
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>  -f, --file-list &lt;PATH&gt;   Tab-delimited source list with PATH or PATH&lt;TAB&gt;LABEL records. Relative paths start from the directory of the list file
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>      --track &lt;TRACK&gt;      Track to grow. It must already have a column dimension
+<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>  -h, --help               Print help
+<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>
+<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>Examples:
+<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a>  pbz append d4 cohort.pbz s3.d4 s4.d4:custom_label --track depth
+</code></pre></div>
+<h4 id="pbz-append-bigwig"><code>pbz append bigwig</code><a class="headerlink" href="#pbz-append-bigwig" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Append columns decoded from bigWig files
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>Usage: pbz append bigwig [OPTIONS] --track &lt;TRACK&gt; &lt;STORE&gt; [PATH[:LABEL]]...
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>Arguments:
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>  &lt;STORE&gt;            PBZ store to grow. It must exist
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>  [PATH[:LABEL]]...  Input files, optionally suffixed with `:LABEL`. The default label is the file name without its format extension (`s1.bed.gz` gives `s1`)
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>Options:
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>  -t, --threads &lt;THREADS&gt;  Worker threads for decode and write [default: 4]
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>  -v, --verbose...         Increase logging verbosity: -v info, -vv debug, -vvv trace. Warnings and errors always print. `RUST_LOG` overrides this when set
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>      --decode-chunks &lt;N&gt;  Position chunks each reader decodes per read pass. Default: auto (up to 4M positions, fewer when that leaves workers short of pieces)
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>  -q, --quiet              Hide the summary line and the progress display of import and append
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>      --no-progress        Hide the progress display
+<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>  -f, --file-list &lt;PATH&gt;   Tab-delimited source list with PATH or PATH&lt;TAB&gt;LABEL records. Relative paths start from the directory of the list file
+<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>      --track &lt;TRACK&gt;      Track to grow. It must already have a column dimension
+<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>      --fill &lt;VALUE|na&gt;    Value of bases that no bigWig interval covers: a number, or na. Default: the fill of the stored track. A different fill is refused
+<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>  -h, --help               Print help
+<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>
+<a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>Examples:
+<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>  pbz append bigwig cohort.pbz kidney.bw:kidney --track signal
+</code></pre></div>
+<h3 id="pbz-info"><code>pbz info</code><a class="headerlink" href="#pbz-info" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>Print the reference, dimensions and per-variable layout of a store
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>Usage: pbz info [OPTIONS] &lt;STORE&gt;
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>Arguments:
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>  &lt;STORE&gt;  PBZ store to describe (directory or zip)
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>Options:
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>      --json        Print one JSON object instead of text
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>  -v, --verbose...  Increase logging verbosity: -v info, -vv debug, -vvv trace. Warnings and errors always print. `RUST_LOG` overrides this when set
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>  -q, --quiet       Hide the summary line and the progress display of import and append
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>  -h, --help        Print help
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>Examples:
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>  pbz info cohort.pbz
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>  pbz info cohort.pbz.zip --json
+<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a>
+<a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>The chunk column gives the inner chunk shape. The shard column gives the shard shape, or - when the array is not sharded. stored and objects count the chunk or shard objects, without the zarr.json metadata.
+</code></pre></div>
+<h3 id="pbz-validate"><code>pbz validate</code><a class="headerlink" href="#pbz-validate" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>Check a store against the PBZ format rules. Exit code 1 when the store is not valid
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>Usage: pbz validate [OPTIONS] &lt;STORE&gt;
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>Arguments:
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>  &lt;STORE&gt;  PBZ store to check (directory or zip)
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>Options:
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>      --json        Print one JSON object with the status and the problems. Each problem also gives the code of the format rule it breaks
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>  -v, --verbose...  Increase logging verbosity: -v info, -vv debug, -vvv trace. Warnings and errors always print. `RUST_LOG` overrides this when set
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>  -q, --quiet       Hide the summary line and the progress display of import and append
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>  -h, --help        Print help
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>Examples:
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>  pbz validate cohort.pbz
+<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a>  pbz validate cohort.pbz.zip --json
+<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a>
+<a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>The check reads metadata, the reference arrays and the dimension labels. It does not read track values.
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-circle-arrow-up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4M12 16V8"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../cookbook/derived-track/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Save a derived track">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Save a derived track
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../python/" class="md-footer__link md-footer__link--next" aria-label="Next: Python API">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Python API
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024-2026 Cade Mirchandani
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/pbzarr/pbzarr" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M216.5 362.5c-66-8-112.5-55.5-112.5-117 0-25 9-52 24-70-6.5-16.5-5.5-51.5 2-66 20-2.5 47 8 63 22.5 19-6 39-9 63.5-9s44.5 3 62.5 8.5c15.5-14 43-24.5 63-22 7 13.5 8 48.5 1.5 65.5 16 19 24.5 44.5 24.5 70.5 0 61.5-46.5 108-113.5 116.5 17 11 28.5 35 28.5 62.5v52c0 15 12.5 23.5 27.5 17.5C441 459.5 512 369 512 257 512 115.5 397 0 255.5 0S0 115.5 0 257c0 111 70.5 203 165.5 237.5 13.5 5 26.5-4 26.5-17.5v-40c-7 3-16 5-24 5-33 0-52.5-18-66.5-51.5-5.5-13.5-11.5-21.5-23-23-6-.5-8-3-8-6 0-6 10-10.5 20-10.5 14.5 0 27 9 40 27.5 10 14.5 20.5 21 33 21s20.5-4.5 32-16c8.5-8.5 15-16 21-21"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog" role="status" aria-atomic="true">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      
+        
+        
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["content.code.copy","content.tabs.link","navigation.footer","navigation.indexes","navigation.instant","navigation.path","navigation.sections","navigation.top","navigation.tracking","search.highlight"],"redirect":null,"search":"../../assets/javascripts/workers/search.719e0d91.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.3cb411a8.min.js"></script>
+      
+    
+  </body>
+</html>

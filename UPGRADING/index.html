@@ -1,0 +1,1986 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Per-base and binned genomic data in Zarr v3">
+      
+      
+      
+        <link rel="canonical" href="https://pbzarr.github.io/UPGRADING/">
+      
+      
+      
+        <link rel="prev" href="../reference/rust/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/pbzarr-icon.svg">
+      <meta name="generator" content="zensical-0.1.1">
+    
+    
+      
+        <title>Upgrading to 0.8 - pbzarr</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../assets/stylesheets/modern/main.ebb7f775.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../assets/stylesheets/modern/palette.b60ce83d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,500,500i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-hidden="true"></label>
+    <div data-md-component="skip">
+      <a href="#__skip" class="md-skip">
+        Skip to content
+      </a>
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="./.." title="pbzarr" class="md-header__button md-logo" aria-label="pbzarr" data-md-component="logo">
+      
+  <img src="../assets/pbzarr-icon.svg" alt="pbzarr">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+      <span class="md-visually-hidden">Navigation</span>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            pbzarr
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Upgrading to 0.8
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <span class="md-visually-hidden">Search</span>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/pbzarr/pbzarr" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pbzarr/pbzarr
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="./.." title="pbzarr" class="md-nav__button md-logo" aria-label="pbzarr" data-md-component="logo">
+      
+  <img src="../assets/pbzarr-icon.svg" alt="pbzarr">
+
+    </a>
+    pbzarr
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pbzarr/pbzarr" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pbzarr/pbzarr
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Home
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Get started
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_2">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Get started
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../get-started/install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Install
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../get-started/1000-genomes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Try a public store
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Concepts
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Concepts
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Data model
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/zarr-xarray-dask/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Zarr, xarray, and Dask
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/storage-layout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Storage layout
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/common-mistakes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Common mistakes
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../cookbook/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Cookbook
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Cookbook
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cookbook/build-a-cohort-store/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Build a cohort store
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cookbook/depth-in-regions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Depth in regions
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cookbook/callable-mask/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Callable mask
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cookbook/compare-samples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Compare samples
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cookbook/export-bedgraph/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Export to bedGraph
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cookbook/derived-track/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Save a derived track
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Reference
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Reference
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Command line
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/python/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Python API
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Store format
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/rust/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Rust
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Upgrading to 0.8
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Upgrading to 0.8
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Summary
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stores" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Stores
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-line-pbz" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Command line (<code>pbz</code>)
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command line (pbz)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#store-and-track-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Store and track arguments
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renamed-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Renamed flags
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed-flags-and-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Removed flags and commands
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Other changes
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-pbzarr" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Python (<code>pbzarr</code>)
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Python (pbzarr)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opening-stores" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Opening stores
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renamed-and-removed-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Renamed and removed functions
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#import-keywords" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Import keywords
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#import-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Import report
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#region-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Region results
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Errors
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Dependencies
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rust-crate-pbzarr" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Rust crate (<code>pbzarr</code>)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        New defaults
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="New defaults">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Layout
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fill-of-bed-value-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Fill of BED value columns
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#append" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Append
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Summary
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stores" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Stores
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-line-pbz" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Command line (<code>pbz</code>)
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command line (pbz)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#store-and-track-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Store and track arguments
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renamed-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Renamed flags
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed-flags-and-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Removed flags and commands
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Other changes
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-pbzarr" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Python (<code>pbzarr</code>)
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Python (pbzarr)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opening-stores" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Opening stores
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renamed-and-removed-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Renamed and removed functions
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#import-keywords" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Import keywords
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#import-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Import report
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#region-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Region results
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Errors
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Dependencies
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rust-crate-pbzarr" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Rust crate (<code>pbzarr</code>)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        New defaults
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="New defaults">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Layout
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fill-of-bed-value-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Fill of BED value columns
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#append" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Append
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                <a id="__skip" tabindex="-1"></a>
+                
+                  
+
+  
+  
+
+
+<h1 id="upgrading-to-pbzarr-08">Upgrading to pbzarr 0.8<a class="headerlink" href="#upgrading-to-pbzarr-08" title="Permanent link">&para;</a></h1>
+<p>pbzarr 0.8 changes the store format, the command line, the Python API and the Rust crate. This page lists what you must change when you move from 0.7.</p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li>0.8 writes and reads format 0.5 only. It cannot open a store made by 0.7 (format 0.4). Import your data again with 0.8.</li>
+<li>In <code>pbz</code>, the store is now the first argument, and every command takes <code>--track</code>. <code>-o/--output</code> is gone.</li>
+<li><code>pbzarr.open</code> now returns one <code>xarray.Dataset</code>. The <code>.pbz</code> accessors are gone. Use the module functions <code>pbzarr.region</code> and <code>pbzarr.reduce_regions</code>.</li>
+<li>Several flags and keywords have new names. There are no aliases for the old names.</li>
+<li>New stores use a new default layout: inner chunks of 65,536 positions x 1 column, in shards of 1,024 chunks x 16 columns.</li>
+<li>BED value columns without data now hold the null (NaN for floats, the type maximum for integers), not 0.</li>
+</ul>
+<h2 id="stores">Stores<a class="headerlink" href="#stores" title="Permanent link">&para;</a></h2>
+<p>A 0.7 store has format 0.4. 0.8 refuses it with this error:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>This is a format 0.4 store. pbzarr 0.8 reads format 0.5 only. Use pbzarr 0.7, or import the data again.
+</code></pre></div>
+<p>There is no converter. Import the source files again with 0.8. If you must read old stores, keep pbzarr 0.7 in a separate environment.</p>
+<p>Format 0.5 is the draft that format 1.0 will come from. Some rules can still change before 1.0, so a 1.0 reader may not open a 0.5 store.</p>
+<p>What changed in the format:</p>
+<ul>
+<li>In format 0.4, each track was a group with a <code>values</code> array and its own contig and offset arrays.</li>
+<li>In format 0.5, the store is one zarr group, and each track is an array at the root. The first dimension of a track is <code>position</code> (or <code>bin_N</code> for binned tracks). The contigs are the root arrays <code>contig_id</code> and <code>contig_length</code>. Coordinates are 0-based and half-open.</li>
+<li>Every import, append and write ends by writing consolidated metadata at the root, so zarr-python and xarray open the store quickly.</li>
+<li>A format 0.5 store opens as an <code>xarray.Dataset</code> with <code>xr.open_zarr</code>, with no pbzarr code.</li>
+</ul>
+<h2 id="command-line-pbz">Command line (<code>pbz</code>)<a class="headerlink" href="#command-line-pbz" title="Permanent link">&para;</a></h2>
+<h3 id="store-and-track-arguments">Store and track arguments<a class="headerlink" href="#store-and-track-arguments" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>0.7</th>
+<th>0.8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pbz import d4 -o out.pbz --track depth a.d4 b.d4</code></td>
+<td><code>pbz import d4 out.pbz a.d4 b.d4 --track depth</code></td>
+</tr>
+<tr>
+<td><code>pbz view out.pbz depth</code></td>
+<td><code>pbz view out.pbz --track depth</code></td>
+</tr>
+<tr>
+<td><code>pbz stat out.pbz depth -r regions.bed</code></td>
+<td><code>pbz stat out.pbz --track depth -R regions.bed</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Import creates the store from the source headers when the path does not exist. When the store exists, import adds the new track. A track name that is already in use is refused.</li>
+<li><code>pbz import bed</code> needs <code>--genome</code> only when it creates the store.</li>
+<li><code>-v/--verbose</code> is now a global flag. A new global flag <code>-q/--quiet</code> hides the summary line and the progress display.</li>
+<li>The import summary now goes to stderr, for every import: <code>imported N sources -&gt; PATH (X positions, Y chunks written, Z skipped)</code>.</li>
+</ul>
+<h3 id="renamed-flags">Renamed flags<a class="headerlink" href="#renamed-flags" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>0.7</th>
+<th>0.8</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--chunk-size N</code></td>
+<td><code>--chunk N</code></td>
+<td>Positions per inner chunk. Default 65,536 (was 1,000,000).</td>
+</tr>
+<tr>
+<td><code>--shard-size N</code></td>
+<td><code>--shard N</code></td>
+<td>The unit changed: it now counts inner chunks per shard, not positions. Default 1,024.</td>
+</tr>
+<tr>
+<td><code>--shard-column-size N</code></td>
+<td><code>--shard-columns N</code></td>
+<td>Columns per shard. Default 16.</td>
+</tr>
+<tr>
+<td><code>-c/--column-dim</code></td>
+<td><code>--dim</code></td>
+<td>No short form.</td>
+</tr>
+<tr>
+<td><code>--reference</code> (<code>import bam</code>)</td>
+<td><code>--fasta</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>-r BED</code> (<code>stat</code>)</td>
+<td><code>-R/--regions BED</code></td>
+<td><code>-r</code> now takes one region, <code>CHROM:START-END</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="removed-flags-and-commands">Removed flags and commands<a class="headerlink" href="#removed-flags-and-commands" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>--column-chunk-size</code>: an inner chunk of a 2D track is now always 1 column wide. Use <code>--codecs</code> for another layout.</li>
+<li><code>--dry-run</code>, <code>--in-flight</code>, <code>--scales</code> and <code>--progress</code> (<code>--no-progress</code> stays).</li>
+<li><code>pbz scale</code>: multiscale pyramids are no longer made.</li>
+</ul>
+<h3 id="other-changes">Other changes<a class="headerlink" href="#other-changes" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>pbz view</code> and <code>pbz stat</code> take regions with <code>-r CHROM:START-END</code> (0-based, half-open, repeatable) and <code>-R BED</code>.</li>
+<li><code>pbz import bed --emit-schema</code> now takes the BED file as its value: <code>--emit-schema FILE</code>. The schema has a fourth column, <code>fill</code>.</li>
+<li><code>--exclude-flags</code> (<code>import bam</code>) also takes hex values and samtools flag names. The default is the same as before.</li>
+<li><code>PATH[:LABEL]</code> sources: URLs are no longer split at <code>:</code>. Default labels drop compound extensions (<code>s1.bed.gz</code> gives <code>s1</code>). Paths in a <code>--file-list</code> file are resolved from the folder of that file.</li>
+<li><code>pbz view</code> prints an integer null as NaN, and it leaves out rows where every column is null.</li>
+<li>New commands: <code>pbz append</code>, <code>pbz info</code> and <code>pbz validate</code>. New flag: <code>pbz import --zip</code>.</li>
+</ul>
+<h2 id="python-pbzarr">Python (<code>pbzarr</code>)<a class="headerlink" href="#python-pbzarr" title="Permanent link">&para;</a></h2>
+<p>The package needs Python 3.12 or later.</p>
+<h3 id="opening-stores">Opening stores<a class="headerlink" href="#opening-stores" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>pbzarr.open</code> always returns one <code>xarray.Dataset</code>. Each track is a data variable with the name of the track. There is no <code>values</code> variable, and there are no <code>DataTree</code> or collection nodes.</li>
+<li>The default dask chunks are now about 128 MiB each, made of whole inner chunks. Before, a dask chunk was one stored shard. Use <code>chunks=</code> to set them.</li>
+<li><code>open</code> reads <code>.zip</code> stores (read-only).</li>
+</ul>
+<h3 id="renamed-and-removed-functions">Renamed and removed functions<a class="headerlink" href="#renamed-and-removed-functions" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>0.7</th>
+<th>0.8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pbzarr.create_store(path)</code></td>
+<td><code>pbzarr.create(path, reference={"chr1": 248956422, ...})</code></td>
+</tr>
+<tr>
+<td><code>ds.pbz.region(query, column=...)</code></td>
+<td><code>pbzarr.region(obj, query)</code> (no <code>column=</code>; select columns with xarray)</td>
+</tr>
+<tr>
+<td><code>ds.pbz.reduce_regions(intervals, reducer, **kwargs)</code></td>
+<td><code>pbzarr.reduce_regions(obj, intervals, reducer, q=, by=, ddof=, skipna=)</code></td>
+</tr>
+<tr>
+<td><code>ds.pbz.regions(...)</code>, <code>dt.pbz.regions(...)</code>, <code>dt.pbz.dataset(...)</code></td>
+<td>Removed. Use <code>pbzarr.region</code> or <code>pbzarr.reduce_regions</code>.</td>
+</tr>
+<tr>
+<td><code>RegionQuery.stop</code></td>
+<td><code>RegionQuery.end</code></td>
+</tr>
+</tbody>
+</table>
+<p>New: <code>pbzarr.write</code>, <code>pbzarr.interval_mask</code>, <code>pbzarr.Reference</code> and <code>pbzarr.__version__</code>.</p>
+<h3 id="import-keywords">Import keywords<a class="headerlink" href="#import-keywords" title="Permanent link">&para;</a></h3>
+<p>The changes apply to <code>import_d4</code>, <code>import_bigwig</code>, <code>import_bed</code> and <code>import_bam</code>.</p>
+<table>
+<thead>
+<tr>
+<th>0.7</th>
+<th>0.8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>column_dim=</code></td>
+<td><code>dim=</code></td>
+</tr>
+<tr>
+<td><code>workers=</code></td>
+<td><code>threads=</code></td>
+</tr>
+<tr>
+<td><code>chunk_size=</code></td>
+<td><code>chunk=</code></td>
+</tr>
+<tr>
+<td><code>shard_size=</code> (positions)</td>
+<td><code>shard=</code> (inner chunks per shard)</td>
+</tr>
+<tr>
+<td><code>shard_column_size=</code></td>
+<td><code>shard_columns=</code></td>
+</tr>
+<tr>
+<td><code>reference=</code> (<code>import_bam</code>)</td>
+<td><code>fasta=</code></td>
+</tr>
+<tr>
+<td><code>column_chunk_size=</code>, <code>in_flight=</code>, <code>scales=</code></td>
+<td>Removed</td>
+</tr>
+<tr>
+<td><code>column_labels=</code> (<code>import_bam</code>)</td>
+<td>Removed. Give <code>(path, label)</code> pairs as sources.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>An import creates the store when it does not exist. You do not need <code>create_store</code> first.</li>
+<li><code>import_bed</code> needs <code>genome=</code> only when it creates the store.</li>
+<li><code>import_bigwig</code> and <code>import_bed</code> take <code>fill=</code> (a number or <code>"na"</code>).</li>
+</ul>
+<h3 id="import-report">Import report<a class="headerlink" href="#import-report" title="Permanent link">&para;</a></h3>
+<p>The dict that an import returns has these keys: <code>positions</code>, <code>chunks_written</code>, <code>chunks_skipped</code>, <code>bytes_written</code> and <code>wall_seconds</code>. The other keys (<code>contigs_written</code>, <code>tasks_completed</code>, <code>pieces</code>, the timing keys and others) are gone.</p>
+<h3 id="region-results">Region results<a class="headerlink" href="#region-results" title="Permanent link">&para;</a></h3>
+<ul>
+<li>The coordinate <code>region_stop</code> is now <code>region_end</code>. <code>region_input_index</code> and <code>region_storage_index</code> are gone.</li>
+<li><code>reduce_regions</code> returns rows in input order. Before, they were in storage order.</li>
+<li>Overlapping intervals are allowed. Before, they were refused.</li>
+<li>A DataFrame of intervals must have an <code>end</code> column. The <code>stop</code> alias is gone.</li>
+<li>An option that the reducer does not take raises <code>TypeError</code>.</li>
+</ul>
+<h3 id="errors">Errors<a class="headerlink" href="#errors" title="Permanent link">&para;</a></h3>
+<ul>
+<li>A missing file raises <code>FileNotFoundError</code>.</li>
+<li>A bad argument, dtype, region or contig raises <code>ValueError</code>.</li>
+<li>Other failures raise <code>pbzarr.PbzError</code>.</li>
+<li>Ctrl-C stops an import and raises <code>KeyboardInterrupt</code>.</li>
+</ul>
+<h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Python 3.12 or later (was 3.11).</li>
+<li><code>flox</code> is no longer a dependency.</li>
+<li>New dependencies: <code>pandas</code> and <code>pcodec</code>.</li>
+<li>Higher minimum versions: <code>zarr&gt;=3.2.1</code>, <code>xarray&gt;=2025.12.0</code>, <code>numpy&gt;=2.4.5</code>, <code>dask&gt;=2026.8.0</code>.</li>
+</ul>
+<h2 id="rust-crate-pbzarr">Rust crate (<code>pbzarr</code>)<a class="headerlink" href="#rust-crate-pbzarr" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>PbzStore</code> and <code>Track</code> are replaced by <code>Dataset</code> (<code>open</code>, <code>open_read_only</code>, <code>open_zip</code>, <code>create</code>, <code>create_zip</code>, <code>read_region</code>, <code>validate</code> and more). <code>Measurement::root(&amp;dataset, name)</code> gives the handle of one track.</li>
+<li><code>Genome</code> is replaced by <code>Reference</code>. <code>Genome::resolve</code> is now <code>Reference::region</code>.</li>
+<li>The <code>genome</code>, <code>scale</code>, <code>store</code> and <code>track</code> modules are removed. <code>scale</code>, <code>ScaleConfig</code> and the estimate types are removed.</li>
+<li><code>TrackConfig</code>:</li>
+<li><code>chunk_size</code> is now <code>chunk</code>.</li>
+<li><code>shard_size</code> is now <code>shard</code>, in inner chunks per shard. <code>unsharded()</code> makes a track with no shards.</li>
+<li><code>shard_column_size</code> is now <code>shard_columns</code>.</li>
+<li><code>column_chunk_size</code> is removed.</li>
+<li><code>fill(Fill)</code> sets the fill, and <code>Fill::Na</code> declares the null as the fill value.</li>
+<li><code>ImportBuilder::into_track</code> and <code>into_tracks</code> are now <code>into_dataset</code>. <code>options(PipelineOptions)</code> is now <code>config(Config)</code>. <code>with_cost_model</code>, <code>with_tap</code> and <code>estimate()</code> are removed.</li>
+<li><code>import::Config</code> uses <code>chunk</code>, <code>shard</code> and <code>shard_columns</code>. <code>in_flight_spans</code>, <code>handle_budget</code> and <code>scales</code> are removed.</li>
+<li><code>Report</code> has the fields <code>positions</code>, <code>chunks_written</code>, <code>chunks_skipped</code>, <code>bytes_written</code> and <code>wall_seconds</code>.</li>
+<li><code>Dtype</code> has <code>I64</code> and <code>U64</code>.</li>
+</ul>
+<h2 id="new-defaults">New defaults<a class="headerlink" href="#new-defaults" title="Permanent link">&para;</a></h2>
+<h3 id="layout">Layout<a class="headerlink" href="#layout" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>0.7</th>
+<th>0.8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Inner chunk</td>
+<td>1,000,000 positions x 16 columns</td>
+<td>65,536 positions x 1 column</td>
+</tr>
+<tr>
+<td>Shard</td>
+<td>none</td>
+<td>1,024 inner chunks (67,108,864 positions) x 16 columns</td>
+</tr>
+<tr>
+<td>Codec</td>
+<td>Blosc zstd level 5, shuffle</td>
+<td>the same</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>A shard is never larger than the genome or the track width.</li>
+<li>In our tests with 32 whole-genome samples, the new layout made stores one third smaller (44.4 GB to 29.9 GB) and made 104 files in place of about 6,400.</li>
+<li><code>pbzarr.write</code> gives the same layout to new variables whose first dimension is <code>position</code>, unless <code>encoding=</code> sets the layout.</li>
+</ul>
+<h3 id="fill-of-bed-value-columns">Fill of BED value columns<a class="headerlink" href="#fill-of-bed-value-columns" title="Permanent link">&para;</a></h3>
+<p>In 0.7, a BED value column held 0 at positions with no data. In 0.8 it holds the null of its dtype: NaN for floats and the type maximum for integers. The null is the <code>_FillValue</code> of the track, so xarray reads it as NaN, and an integer track then has a float dtype in xarray. A BED value equal to the integer maximum is refused.</p>
+<p>Bool columns and BED3 masks still hold <code>false</code>. To get the 0.7 behaviour, use <code>--fill 0</code> (CLI) or <code>fill=0</code> (Python).</p>
+<h3 id="append">Append<a class="headerlink" href="#append" title="Permanent link">&para;</a></h3>
+<p><code>pbz append</code> cannot add columns to a track whose shards hold more than one column, and the new default is 16 columns per shard. To append to a track later, import it with <code>--shard-columns 1</code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-circle-arrow-up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4M12 16V8"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../reference/rust/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Rust">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Rust
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024-2026 Cade Mirchandani
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/pbzarr/pbzarr" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M216.5 362.5c-66-8-112.5-55.5-112.5-117 0-25 9-52 24-70-6.5-16.5-5.5-51.5 2-66 20-2.5 47 8 63 22.5 19-6 39-9 63.5-9s44.5 3 62.5 8.5c15.5-14 43-24.5 63-22 7 13.5 8 48.5 1.5 65.5 16 19 24.5 44.5 24.5 70.5 0 61.5-46.5 108-113.5 116.5 17 11 28.5 35 28.5 62.5v52c0 15 12.5 23.5 27.5 17.5C441 459.5 512 369 512 257 512 115.5 397 0 255.5 0S0 115.5 0 257c0 111 70.5 203 165.5 237.5 13.5 5 26.5-4 26.5-17.5v-40c-7 3-16 5-24 5-33 0-52.5-18-66.5-51.5-5.5-13.5-11.5-21.5-23-23-6-.5-8-3-8-6 0-6 10-10.5 20-10.5 14.5 0 27 9 40 27.5 10 14.5 20.5 21 33 21s20.5-4.5 32-16c8.5-8.5 15-16 21-21"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog" role="status" aria-atomic="true">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      
+        
+        
+      <script id="__config" type="application/json">{"annotate":null,"base":"..","features":["content.code.copy","content.tabs.link","navigation.footer","navigation.indexes","navigation.instant","navigation.path","navigation.sections","navigation.top","navigation.tracking","search.highlight"],"redirect":null,"search":"../assets/javascripts/workers/search.719e0d91.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.3cb411a8.min.js"></script>
+      
+    
+  </body>
+</html>
